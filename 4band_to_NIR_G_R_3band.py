@@ -2,7 +2,12 @@
 """
 Created on Mon May 10 15:52:58 2021
 
-@author: gfrancis
+
+Tool for creating a 3band (NIR,G,R) image from 4band Planet Scope images
+
+
+@author: Grant Francis
+email: gfrancis@uvic.ca
 """
 
 import rasterio
@@ -11,10 +16,12 @@ import numpy as np
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet_data\HWC\HWC_aoi_20200808_PSScene4Band_Explorer\files'
-name = '20200808_mosaic.tif'
-pic = lib + '\\' + name
-out = r'C:\Users\gfrancis\Documents\Planet_data\HWC'
+lib = r'C:\Users\gfrancis\Documents\Planet\WR\training\4band_mosaic'
+name = '20200818_mosaic'
+out = r'C:\Users\gfrancis\Documents\Planet\WR\training'
+
+
+pic = lib + '\\' + name + '.tif'
 
 
 ras = rasterio.open(pic)
