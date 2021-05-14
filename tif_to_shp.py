@@ -10,7 +10,6 @@ import numpy as np
 import os
 os.environ['PROJ_LIB'] = 'C:\\Users\\gfrancis\\Appdata\\Roaming\\Python\\Python37\\site-packages\\osgeo\\data\\proj'
 os.environ['GDAL_DATA'] = 'C:\\Users\\gfrancis\\Appdata\\Roaming\\Python\\Python37\\site-packages\\osgeo\\data'
-# os.environ['GDAL_DRIVER_PATH'] = 'C:\\Users\\gfrancis\\Appdata\\Roaming\\Python\\Python37\\site-packages\\osgeo'
 import geopandas as gpd
 from osgeo import gdal
 import pandas as pd
@@ -27,20 +26,13 @@ import rasterio.warp
 
 HOME = os.path.expanduser('~')
 
-pic = '20200808_mosaic.tif_NIR_G_R'
-file_path = HOME + r'\Documents\output\UNet_Training_Library_HWC_NIR_G_R\map\%s.tif' % pic
+pic = '20200818_mosaic_NIR_G_R'
+file_path = HOME + r'\Documents\Planet\WR\training\%s.tif' % pic
 
-RESULTS_DIR = r'\Documents\Planet_data\HWC\AOI_from_%s' % pic
+RESULTS_DIR = r'\Documents\Planet\WR'
 path = HOME + RESULTS_DIR
 
 
-# try:
-#     os.mkdir(path)
-# except OSError:
-#     print ('Creation of the directory \'%s\' failed.\nFolder likely already exists' % path)
-# else:
-#     print ('Successfully created the directory \'%s\'' % path)
-#     SAVE_DIR = path+'\\'
 
 
 if os.path.isdir(path) is False:
@@ -48,10 +40,10 @@ if os.path.isdir(path) is False:
     print ('Successfully created the directory \'%s\'' % path)
     SAVE_DIR = path+'\\'
 
-else:
-    print('Directory: \'%s\' already exists.' % path)
-    input('Continue?')
-    SAVE_DIR = path+'\\'
+# else:
+#     print('Directory: \'%s\' already exists.' % path)
+#     input('Continue?')
+#     SAVE_DIR = path+'\\'
 
 
 
