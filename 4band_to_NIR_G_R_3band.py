@@ -16,19 +16,25 @@ import numpy as np
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\WR\training\4band_mosaic'
-name = '20200818_mosaic'
-out = r'C:\Users\gfrancis\Documents\Planet\WR\training'
+lib = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\mosaics'
+name = 'Banks_Island_mosaic'
+out = lib
 
 
 pic = lib + '\\' + name + '.tif'
 
 
 ras = rasterio.open(pic)
-assert ras.meta['count'] == 4
-bandRed = ras.read(3)
-bandgreen = ras.read(2)
-bandNIR = ras.read(4)
+
+if ras.meta['count'] == 4:
+    bandRed = ras.read(3)
+    bandgreen = ras.read(2)
+    bandNIR = ras.read(4) ### NIR is channel 4 in Planet Scope 4band products
+    
+if ras.meta['count'] == 5:
+    bandRed = ras.read(3)
+    bandgreen = ras.read(2)
+    bandNIR = ras.read(5) ### NIR is channel 5 in Rapid Eye 5band products
 
 NIR_arr = bandNIR.astype(float)
 green_arr = bandgreen.astype(float)

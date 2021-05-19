@@ -26,10 +26,10 @@ import rasterio.warp
 
 HOME = os.path.expanduser('~')
 
-pic = '20200818_mosaic_NIR_G_R'
-file_path = HOME + r'\Documents\Planet\WR\training\%s.tif' % pic
+pic = 'Banks_Island_mosaic_NIR_G_R'
+file_path = HOME + r'\Documents\Planet\Banks\Data\NIR_G_R_mosaics\%s.tif' % pic
 
-RESULTS_DIR = r'\Documents\Planet\WR'
+RESULTS_DIR = r'\Documents\Planet\Banks\Training_Library_Banks_40000\AOI'
 path = HOME + RESULTS_DIR
 
 
@@ -62,7 +62,7 @@ with rasterio.open(file_path) as dataset:
         # Transform shapes from the dataset's own coordinate
         # reference system to CRS84 (EPSG:4326).
         geom = rasterio.warp.transform_geom(
-            dataset.crs, 'EPSG:4326', g, precision=6)
+            dataset.crs, dataset.crs, g, precision=6)
 
         geo_list.append(geom)
 
