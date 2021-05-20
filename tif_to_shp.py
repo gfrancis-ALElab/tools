@@ -54,6 +54,8 @@ with rasterio.open(file_path) as dataset:
     # Read the dataset's valid data mask as a ndarray.
     mask = dataset.dataset_mask()
     # mask = np.where(mask>0, 1, np.nan)
+    
+    crs = dataset.crs
 
     # Extract feature shapes and values from the array.
     for g, val in rasterio.features.shapes(
@@ -62,7 +64,7 @@ with rasterio.open(file_path) as dataset:
         # Transform shapes from the dataset's own coordinate
         # reference system to CRS84 (EPSG:4326).
         geom = rasterio.warp.transform_geom(
-            dataset.crs, dataset.crs, g, precision=6)
+            crs, crs, g, precision=6)
 
         geo_list.append(geom)
 
@@ -75,7 +77,7 @@ for i in range(len(geo_list)):
     l.append(shape(geo_list[i]))
 
 df = pd.DataFrame(l)
-gdf = gpd.GeoDataFrame(geometry=df[0], crs='EPSG:4326')
+gdf = gpd.GeoDataFrame(geometry=df[0], crs=crs)
 
 
 gdf.to_file(SAVE_DIR+'%s_AOI.shp' % pic)
