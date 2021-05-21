@@ -21,7 +21,7 @@ import datetime
 
 client = api.ClientV1()
 
-# os.environ['PL_API_KEY']='29525d6d2d73497181c0003482e18a62'
+# os.environ['PL_API_KEY']=''
 # PLANET_API_KEY = os.getenv('PL_API_KEY')
 
 # BASE_URL = "https://api.planet.com/data/v1"
