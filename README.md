@@ -1,2 +1,2 @@
 # tools
-Various tools for machine learning and image processing
+Image processing & and misc tools for processing remotely sensed data for machine learning applications.
