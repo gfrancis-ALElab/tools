@@ -26,10 +26,10 @@ import rasterio.warp
 
 HOME = os.path.expanduser('~')
 
-pic = 'Banks_Island_mosaic_NIR_G_R'
-file_path = HOME + r'\Documents\Planet\Banks\Data\NIR_G_R_mosaics\%s.tif' % pic
+pic = '20170805_ref'
+file_path = HOME + r'\Documents\Planet\SuperReg\%s.tif' % pic
 
-RESULTS_DIR = r'\Documents\Planet\Banks\Training_Library_Banks_40000\AOI'
+RESULTS_DIR = r'\Documents\Planet\SuperReg\AOI'
 path = HOME + RESULTS_DIR
 
 
