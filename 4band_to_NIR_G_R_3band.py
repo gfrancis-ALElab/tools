@@ -29,8 +29,8 @@ speedups.disable()
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\SuperReg\originals'
-out = r'C:\Users\gfrancis\Documents\Planet\SuperReg\NIR_G_R_standardized'
+lib = r'C:\Users\gfrancis\Documents\Planet\WR\data\mosaics'
+out = r'C:\Users\gfrancis\Documents\Planet\WR\data\NIR_G_R_mosaics'
 ### Get CRS from truths used
 truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
 
@@ -67,21 +67,39 @@ for pic in glob.glob(lib + '\\*.tif'):
     red_arr = bandRed.astype(float)
     
     
+    ### replace nodata zeros & 65535 to Nan
     if NIR_arr.min() == 0:
-        NIR_arr = np.where(NIR_arr==0, 65535, NIR_arr)
-        green_arr = np.where(green_arr==0, 65535, green_arr)
-        red_arr = np.where(red_arr==0, 65535, red_arr)
+        NIR_arr = np.where(NIR_arr==0, np.nan, NIR_arr)
+        green_arr = np.where(green_arr==0, np.nan, green_arr)
+        red_arr = np.where(red_arr==0, np.nan, red_arr)
+    if NIR_arr.max() == 65535:
+        NIR_arr = np.where(NIR_arr==65535, np.nan, NIR_arr)
+        green_arr = np.where(green_arr==65535, np.nan, green_arr)
+        red_arr = np.where(red_arr==65535, np.nan, red_arr)
+
+    
+    ### normalize 0 to 1
+    NIR_norm = NIR_arr/np.nanmax(NIR_arr)
+    green_norm = green_arr/np.nanmax(green_arr)
+    red_norm = red_arr/np.nanmax(red_arr)
     
     
-    NIR_arr = (NIR_arr/NIR_arr.max())*255
-    green_arr = (green_arr/green_arr.max())*255
-    red_arr = (red_arr/red_arr.max())*255
+    ### center average on 50%
+    NIR_norm = NIR_norm + (0.5 - np.nanmean(NIR_norm))
+    green_norm = green_norm + (0.5 - np.nanmean(green_norm))
+    red_norm = red_norm + (0.5 - np.nanmean(red_norm))
     
     
-    NIR_arr = NIR_arr.astype(np.uint8)
-    green_arr = green_arr.astype(np.uint8)
-    red_arr = red_arr.astype(np.uint8)
+    # ### scale (0 to 255)
+    NIR_scaled = NIR_norm*255
+    green_scaled = green_norm*255
+    red_scaled = red_norm*255
     
+    
+    ### change dtype
+    NIR_scaled = NIR_scaled.astype(np.uint8)
+    green_scaled = green_scaled.astype(np.uint8)
+    red_scaled = red_scaled.astype(np.uint8)
     
     
     kwargs3band = ras.meta
@@ -93,11 +111,11 @@ for pic in glob.glob(lib + '\\*.tif'):
     
     print(kwargs3band)
     print('\n')
-    
-    with rasterio.open(out + '\\%s_NIR_G_R.tif'%name, 'w', **kwargs3band) as dst5:
-        dst5.write_band(1, NIR_arr.astype(rasterio.uint8))
-        dst5.write_band(2, green_arr.astype(rasterio.uint8))
-        dst5.write_band(3, red_arr.astype(rasterio.uint8))
+
+    with rasterio.open(out + '\\%s_NIR_G_R_avg50_scaled(0_255).tif'%name, 'w', **kwargs3band) as dst:
+        dst.write_band(1, NIR_scaled.astype(rasterio.uint8))
+        dst.write_band(2, green_scaled.astype(rasterio.uint8))
+        dst.write_band(3, red_scaled.astype(rasterio.uint8))
         
     
     ras.close()
