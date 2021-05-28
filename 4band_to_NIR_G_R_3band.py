@@ -29,8 +29,8 @@ speedups.disable()
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\SuperReg'
-out = lib
+lib = r'C:\Users\gfrancis\Documents\Planet\SuperReg\originals'
+out = r'C:\Users\gfrancis\Documents\Planet\SuperReg\NIR_G_R_standardized'
 ### Get CRS from truths used
 truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
 
@@ -55,16 +55,22 @@ for pic in glob.glob(lib + '\\*.tif'):
     if ras.meta['count'] == 4:
         bandRed = ras.read(3)
         bandgreen = ras.read(2)
-        bandNIR = ras.read(4) ### NIR is channel 4 in Planet Scope 4band products
+        bandNIR = ras.read(4) ### NIR is channel 4 in Planet Scope 4band 
         
     if ras.meta['count'] == 5:
         bandRed = ras.read(3)
         bandgreen = ras.read(2)
-        bandNIR = ras.read(5) ### NIR is channel 5 in Rapid Eye 5band products
+        bandNIR = ras.read(5) ### NIR is channel 5 in Rapid Eye 5band
     
     NIR_arr = bandNIR.astype(float)
     green_arr = bandgreen.astype(float)
     red_arr = bandRed.astype(float)
+    
+    
+    if NIR_arr.min() == 0:
+        NIR_arr = np.where(NIR_arr==0, 65535, NIR_arr)
+        green_arr = np.where(green_arr==0, 65535, green_arr)
+        red_arr = np.where(red_arr==0, 65535, red_arr)
     
     
     NIR_arr = (NIR_arr/NIR_arr.max())*255
@@ -86,6 +92,7 @@ for pic in glob.glob(lib + '\\*.tif'):
         count=3)
     
     print(kwargs3band)
+    print('\n')
     
     with rasterio.open(out + '\\%s_NIR_G_R.tif'%name, 'w', **kwargs3band) as dst5:
         dst5.write_band(1, NIR_arr.astype(rasterio.uint8))
