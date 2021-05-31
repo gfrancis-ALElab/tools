@@ -29,8 +29,8 @@ speedups.disable()
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\WR\data\mosaics'
-out = r'C:\Users\gfrancis\Documents\Planet\WR\data\NIR_G_R_mosaics'
+lib = r'C:\Users\gfrancis\Documents\Planet\SuperReg\originals'
+out = r'C:\Users\gfrancis\Documents\Planet\SuperReg\NIR_G_R_mosaics_balanced'
 ### Get CRS from truths used
 truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
 
