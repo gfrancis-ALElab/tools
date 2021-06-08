@@ -26,8 +26,8 @@ import rasterio.warp
 
 HOME = os.path.expanduser('~')
 
-pic = '20170805_ref'
-file_path = HOME + r'\Documents\Planet\SuperReg\%s.tif' % pic
+pic = '20170701_v2_sreg_ch4'
+file_path = HOME + r'\Documents\Planet\SuperReg\originals\%s.tif' % pic
 
 RESULTS_DIR = r'\Documents\Planet\SuperReg\AOI'
 path = HOME + RESULTS_DIR

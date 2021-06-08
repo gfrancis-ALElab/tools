@@ -29,10 +29,10 @@ speedups.disable()
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\SuperReg\originals'
-out = r'C:\Users\gfrancis\Documents\Planet\SuperReg\NIR_G_R_mosaics_balanced'
+lib = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\mosaics'
+out = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\NIR_G_R_mosaics_balanced'
 ### Get CRS from truths used
-truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
+truths_path = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\ground_truths\Banks_Island_slumps.shp'
 
 truths = gpd.read_file(truths_path)
 crs = truths.crs
