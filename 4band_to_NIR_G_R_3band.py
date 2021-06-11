@@ -3,7 +3,8 @@
 Created on Mon May 10 15:52:58 2021
 
 
-Tool for creating a 3band (NIR,G,R) image from 4band Planet Scope images
+Tool for creating a 3band (NIR,G,R) image from Planet images
+Images are converted to uint8 with average magnitudes balanced on 127
 
 
 @author: Grant Francis
@@ -29,10 +30,10 @@ speedups.disable()
 
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\mosaics'
-out = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\NIR_G_R_mosaics_balanced'
-### Get CRS from truths used
-truths_path = r'C:\Users\gfrancis\Documents\Planet\Banks\Data\ground_truths\Banks_Island_slumps.shp'
+lib = r'C:\Users\gfrancis\Documents\Planet\WR_timline\mosaics'
+out = r'C:\Users\gfrancis\Documents\Planet\WR_timline\NIR_G_R_mosaics_balanced'
+### Get CRS from truths
+truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
 
 truths = gpd.read_file(truths_path)
 crs = truths.crs
@@ -109,8 +110,8 @@ for pic in glob.glob(lib + '\\*.tif'):
         crs=crs,
         count=3)
     
-    print(kwargs3band)
-    print('\n')
+    # print(kwargs3band)
+    # print('\n')
 
     with rasterio.open(out + '\\%s_NIR_G_R_avg50_scaled(0_255).tif'%name, 'w', **kwargs3band) as dst:
         dst.write_band(1, NIR_scaled.astype(rasterio.uint8))
