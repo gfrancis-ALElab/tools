@@ -14,8 +14,8 @@ email: gfrancis@uvic.ca
 import os
 home = os.path.expanduser('~')
 ### Set OSGEO env PATHS
-os.environ['PROJ_LIB'] = home + r'\Appdata\Roaming\Python\Python37\site-packages\osgeo\data\proj'
-os.environ['GDAL_DATA'] = home + r'\Appdata\Roaming\Python\Python37\site-packages\osgeo\data'
+os.environ['PROJ_LIB'] = '/usr/share/proj'
+os.environ['GDAL_DATA'] = '/usr/share/gdal'
 import rasterio
 import numpy as np
 import glob
@@ -28,27 +28,28 @@ speedups.disable()
 
 
 
+### IO
+folder = home + '/Planet/WR'
+lib = folder + '/Data/mosaics'
+out = folder + '/Data/NIR_G_R_mosaics'
 
 
-lib = r'C:\Users\gfrancis\Documents\Planet\WR_timline\mosaics'
-out = r'C:\Users\gfrancis\Documents\Planet\WR_timline\NIR_G_R_mosaics_balanced'
 ### Get CRS from truths
-truths_path = r'C:\Users\gfrancis\Documents\Planet\WR\Data\ground_truths\Willow_River_Thaw_Slumps_poly.shp'
-
-truths = gpd.read_file(truths_path)
+path_t = folder + '/Data/ground_truths'
+truths = gpd.read_file(path_t)
 crs = truths.crs
 
 
 
 
 def get_name(file_location):
-    filename = file_location.split('\\')[-1]
+    filename = file_location.split('/')[-1]
     filename = filename.split('.')
     return filename[0]
 
 
 
-for pic in glob.glob(lib + '\\*.tif'):
+for pic in glob.glob(lib + '/*.tif'):
 
     ras = rasterio.open(pic)
     name = get_name(pic)
@@ -113,7 +114,7 @@ for pic in glob.glob(lib + '\\*.tif'):
     # print(kwargs3band)
     # print('\n')
 
-    with rasterio.open(out + '\\%s_NIR_G_R_avg50_scaled(0_255).tif'%name, 'w', **kwargs3band) as dst:
+    with rasterio.open(out + '/%s_NIR_G_R_avg50_scaled0_255.tif'%name, 'w', **kwargs3band) as dst:
         dst.write_band(1, NIR_scaled.astype(rasterio.uint8))
         dst.write_band(2, green_scaled.astype(rasterio.uint8))
         dst.write_band(3, red_scaled.astype(rasterio.uint8))
