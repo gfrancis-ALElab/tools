@@ -29,13 +29,16 @@ speedups.disable()
 
 
 ### IO
-folder = home + '/Planet/WR'
-lib = folder + '/Data/mosaics'
-out = folder + '/Data/NIR_G_R_mosaics'
+folder = home + '/Planet/WR_timeline'
+lib = folder + '/mosaics'
+out = folder + '/NIR_G_R_mosaics'
+
+if os.path.isdir(out) is False:
+    os.makedirs(out)
 
 
 ### Get CRS from truths
-path_t = folder + '/Data/ground_truths'
+path_t = home + '/Planet/WR/Data/ground_truths/Willow_River_Thaw_Slumps_poly.shp'
 truths = gpd.read_file(path_t)
 crs = truths.crs
 
