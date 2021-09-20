@@ -12,7 +12,7 @@ import netCDF4 as nc
 
 
 
-file = '/opt/globsim/examples/Example1/era5/era5_pl_20170701_to_20170702.nc'
+file = '/opt/globsim/examples/WR_data/era5/era5_rea_pl_20200531_to_20200601.nc'
 data = nc.Dataset(file)
 
 
