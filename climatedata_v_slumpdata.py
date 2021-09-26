@@ -12,23 +12,29 @@ import netCDF4 as nc
 import geopandas as gpd
 import pandas as pd
 import utm
+import datetime
+from natsort import natsorted
+import glob
 
 
 
-### input data
+### input slump data
 
 slumps_file = '/home/feynman/Planet/WR_Timeline/Priority_Regions/Priority_20thresh_8buffer.shp'
 slumps = gpd.read_file(slumps_file)
 slumps['center_utm'] = slumps.centroid
-c = utm.to_latlon(slumps['center_utm'][:].x, slumps['center_utm'][:].y, 8, 'N')
+zn = int(slumps.crs.name[-3:-1])
+zl = slumps.crs.name[-1]
+c = utm.to_latlon(slumps['center_utm'][:].x, slumps['center_utm'][:].y, zn, zl)
 slumps['center_lat_lon'] = list(zip(*c))
 
-climate_file = '/opt/globsim/examples/WR_data/era5/era5_rea_sa_20200531_to_20200601.nc'
+### example nc file for coordinate grid conversion
+climate_files_dir = '/opt/globsim/examples/WR_data/era5'
+climate_file = climate_files_dir + '/era5_rea_pl_20200531_to_20200601.nc'
 nc_data = nc.Dataset(climate_file)
 
 
 ### get netcdf grid index for each slump based on lat lon of slump
-
 indices = []
 for point in slumps['center_lat_lon']:
     
@@ -53,20 +59,148 @@ Ids_loc.insert(0, 'Id', Ids_loc.index)
 
 
 
+
+
 ### create time series of a variable given grid index
 
+def get_timeseries(var, grid_lat, grid_lon):
+    
+    if var in ['t', 'r', 'u', 'v', 'z']:
+        atype = 'pl'
+    elif var in ['t2m', 'd2m', 'u10', 'v10', 'tco3', 'tcwv']:
+        atype = 'sa'
+    elif var in ['tp', 'ssrd', 'strd']:
+        atype = 'sf'
+    else:
+        raise ValueError('variable not recognized')
+
+
+    series = []
+    timeFULL = []
+    for ncfile in natsorted(glob.glob(climate_files_dir + '/*%s*.nc'%atype)):
+        
+        nc_data = nc.Dataset(ncfile)
+        ### convert netCDF4 time hours since 1900 01 01 to readable time
+        time = nc.num2date(nc_data['time'],
+                            nc_data['time'].units,
+                            nc_data['time'].calendar,
+                            only_use_cftime_datetimes=False)
+        
+        if atype == 'pl':
+### pressure levels: [ 750,  775,  800,  825,  850,  875,  900,  925,  950, 975, 1000]
+            try:
+                series.extend(nc_data[var][:,-1,grid_lat,grid_lon])
+                timeFULL.extend(time)
+            except: pass
+        else:
+            try:
+                series.extend(nc_data[var][:,grid_lat,grid_lon])
+                timeFULL.extend(time)
+            except: pass
+    
+    label = nc_data[var].long_name
+    units = nc_data[var].units
+    
+    return series, timeFULL, label, units
+
+
+
+
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+for variable in ['t','t2m','d2m']:
+    series, time, label, units = get_timeseries(variable, 4, 7)
+    ax1.plot(time, series, label='%s [%s]'%(label,units))
+series, time, label, units = get_timeseries('tp', 4, 7)
+ax2.plot(time, series, label='%s [%s]'%(label,units))
+
+
+
+ax1.legend()
+plt.xlabel('Time [YYY-MM-DD]')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### structure for pl data (level=1000 for surface)
+### t,r,u,v,z(time, level, lat, lon)
+# essentially need this: (nc_data['_'][:,level,lat,lon])
+
+
+### label = nc_data['_'].standard_name
+### units = nc_data['_'].units
 
 
 ### structure for pl data
 ### (time, level, lat, lon)
-# plt.imshow(data['u'][0,0,:,:])
+
+
+### structure for sa data
+### t2m, d2m, u10, v10, tco3, tcwv(time, latitude, longitude)
+
+
+### structure for sf data (total precip, Surface solar radiation downwards,
+###                         Surface thermal radiation downwards)
+### tp, ssrd, strd(time, latitude, longitude)
 
 
 
 
 
-### convert netCDF4 time hours since 1900 01 01 to readable time
-# nc.num2date(data['time'], data['time'].units, data['time'].calendar)
+
+
+
+
+
+
+
+
+
 
 
 
