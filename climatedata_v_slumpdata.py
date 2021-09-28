@@ -112,11 +112,10 @@ for variable in ['t','t2m','d2m']:
     series, time, label, units = get_timeseries(variable, 4, 7)
     ax1.plot(time, series, label='%s [%s]'%(label,units))
 series, time, label, units = get_timeseries('tp', 4, 7)
-ax2.plot(time, series, label='%s [%s]'%(label,units))
+ax2.plot(time, series, color='purple', label='%s [%s]'%(label,units))
 
 
-
-ax1.legend()
+fig.legend()
 plt.xlabel('Time [YYY-MM-DD]')
 
 
