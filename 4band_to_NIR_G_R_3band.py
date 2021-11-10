@@ -29,7 +29,7 @@ speedups.disable()
 
 
 ### IO
-folder = home + '/Planet/Banks_timeline'
+folder = home + '/Planet/HWC/Data'
 lib = folder + '/mosaics'
 out = folder + '/NIR_G_R_mosaics'
 
@@ -38,7 +38,7 @@ if os.path.isdir(out) is False:
 
 
 ### Get CRS from truths
-path_t = home + '/Planet/Banks/Data/ground_truths/Banks_Island_slumps.shp'
+path_t = home + '/Planet/HWC/Data/Slumps/HotWeatherCreek_slumps.shp'
 truths = gpd.read_file(path_t)
 crs = truths.crs
 
@@ -52,7 +52,7 @@ def get_name(file_location):
 
 
 
-for pic in glob.glob(lib + '/*.tif'):
+for pic in glob.glob(lib + '/HWC*.tif'):
 
     ras = rasterio.open(pic)
     name = get_name(pic)
