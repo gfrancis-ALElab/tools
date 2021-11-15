@@ -17,8 +17,8 @@ import osgeo_utils
 
 
 gdal_merge = home + '/repos/tools/gdal_merge.py'
-top_folder = home + '/Planet/Banks_timeline/downloads/**/files'
-out_dir = home + '/Planet/Banks_timeline/mosaics'
+top_folder = home + '/Planet/HWC_Timeline/downloads/**/files'
+out_dir = home + '/Planet/HWC_Timeline/mosaics'
 
 
 

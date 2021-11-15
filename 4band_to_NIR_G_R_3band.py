@@ -52,7 +52,7 @@ def get_name(file_location):
 
 
 
-for pic in glob.glob(lib + '/HWC*.tif'):
+for pic in glob.glob(lib + '/Hot*.tif'):
 
     ras = rasterio.open(pic)
     name = get_name(pic)
