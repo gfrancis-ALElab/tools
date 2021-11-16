@@ -24,7 +24,7 @@ out_dir = home + '/Planet/HWC_Timeline/mosaics'
 
 for directory in glob.glob(top_folder):
     
-    name = directory[51:59]
+    name = directory[44:52]
     # print(name)
     out_file = out_dir + '/' + name + '.tif'
     os.system('echo merging: %s'%name)
