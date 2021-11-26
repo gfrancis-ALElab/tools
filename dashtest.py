@@ -102,143 +102,46 @@ L = len(geojsdata['features'])
 
 
 
+# # Initialize figure with subplots
+# fig = make_subplots(
+#     rows=1, cols=2,
+#     column_widths=[1, 1],
+#     row_heights=[1],
+#     specs=[[{"type": "choroplethmapbox", "rowspan": 1}, {"type": "bar"}]]) #,
+#            # [            None                    , {"type": "surface"}]])
 
-
-# fig = px.choropleth_mapbox(geodf, geojson=geodf.geometry, locations=geodf.index,
-#                            center={"lat": 71.909218, "lon": -120.505967},
-#                            mapbox_style="stamen-terrain", zoom=9)
-
-
-# fig.update_layout(
-#     mapbox_style="white-bg",
-#     mapbox_layers=[
-#         {
-#             "below": 'traces',
-#             "sourcetype": "raster",
-#             "sourceattribution": "United States Geological Survey",
-#             "source": [
-#                 "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"
-#             ]
-#         }
-#       ])
-# fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-
-# Initialize figure with subplots
-fig = make_subplots(
-    rows=1, cols=2,
-    column_widths=[1, 1],
-    row_heights=[1],
-    specs=[[{"type": "choroplethmapbox", "rowspan": 1}, {"type": "bar"}]]) #,
-           # [            None                    , {"type": "surface"}]])
-
-# # Add scattergeo globe map of volcano locations
-# fig.add_trace(
-#     go.Scattergeo(lat=df["Latitude"],
-#                   lon=df["Longitude"],
-#                   mode="markers",
-#                   hoverinfo="text",
-#                   showlegend=False,
-#                   marker=dict(color="crimson", size=4, opacity=0.8)),
-#     row=1, col=1
-# )
-#
-# geo_path = "/home/feynman/Planet/Banks_Timeline/AOI/banks_timeline_aoi.shp"
-# geodf = gpd.read_file(geo_path)
-#
-fig.add_trace(
-    go.Choroplethmapbox(geojson=json.loads(geodf.to_json()),
-    # geojson=geojsdata,
-                                    locations=[geojsdata['features'][k]['id'] for k in range(L)],
-                                    colorscale="Viridis"),
-    # fig.update_layout(mapbox_style="light", mapbox_accesstoken=token,
-    # mapbox_zoom=3, mapbox_center = {"lat": 37.0902, "lon": -95.7129}),
-    # fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}),
-    row=1, col=1
-)
-
-fig.update_layout(mapbox_style='stamen-terrain',
-                    height = 750,
-                    autosize=True,
-                    margin={"r":1,"t":1,"l":1,"b":1},
-                    paper_bgcolor='#303030',
-                    plot_bgcolor='#303030',
-                    mapbox=dict(center=dict(lat=71.909218, lon=-120.505967),zoom=6),
-                    )
 
 # fig.add_trace(
-#     go.Figure(px.choropleth_mapbox(geodf, geojson=geodf.geometry, locations=geodf.index,
-#                                 color=geodf.index, center={"lat": 71.909218, "lon": -120.505967},
-#                                mapbox_style="open-street-map", zoom=9)),
+#     go.Choroplethmapbox(geojson=json.loads(geodf.to_json()),
+#     # geojson=geojsdata,
+#                                     locations=[geojsdata['features'][k]['id'] for k in range(L)],
+#                                     colorscale="Viridis"),
 #     # fig.update_layout(mapbox_style="light", mapbox_accesstoken=token,
 #     # mapbox_zoom=3, mapbox_center = {"lat": 37.0902, "lon": -95.7129}),
 #     # fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}),
 #     row=1, col=1
 # )
-
-#########
-# trace = go.Choroplethmapbox( z = np.random.randint(10, 75,  size=L), #synthetic data
-#                             locations = [geojsdata['features'][k]['id'] for k in range(L)],
-#                             colorscale = 'Viridis',
-#                             colorbar = dict(thickness=20, ticklen=3),
-#                             geojson = geojsdata,
-#                             text = regions,
-#                             marker_line_width=0.1, marker_opacity=0.7)
-# layout = go.Layout(title_text ='UK LAD Choropleth Demo', title_x =0.5, width=750, height=700,
-#                    mapbox = dict(center= dict(lat=54, lon=-2),
-#                                  accesstoken= mapbox_access_token,
-#                                  zoom=3
-#                                ))
 #
-# fig=go.Figure(data=[trace], layout =layout)
-##########
-
-# Add locations bar chart
-fig.add_trace(
-    go.Bar(x=freq["x"][0:10],y=freq["Country"][0:10], marker=dict(color="crimson"), showlegend=False),
-    row=1, col=2
-)
-
-# Add 3d surface of volcano
+# fig.update_layout(mapbox_style='stamen-terrain',
+#                     height = 750,
+#                     autosize=True,
+#                     margin={"r":1,"t":1,"l":1,"b":1},
+#                     paper_bgcolor='#303030',
+#                     plot_bgcolor='#303030',
+#                     mapbox=dict(center=dict(lat=71.909218, lon=-120.505967),zoom=6),
+#                     )
+#
+# # Add locations bar chart
 # fig.add_trace(
-#     go.Surface(z=df_v.values.tolist(), showscale=False),
-#     row=2, col=2
+#     go.Bar(x=freq["x"][0:10],y=freq["Country"][0:10], marker=dict(color="crimson"), showlegend=False),
+#     row=1, col=2
 # )
 
-# # Update geo subplot properties
-# fig.update_geos(
-#     projection_type="orthographic",
-#     landcolor="white",
-#     oceancolor="MidnightBlue",
-#     showocean=True,
-#     lakecolor="LightBlue"
-# )
+fig = go.Choroplethmapbox(geojson=json.loads(geodf.to_json()),
+    # geojson=geojsdata,
+                                    locations=[geojsdata['features'][k]['id'] for k in range(L)],
+                                    colorscale="Viridis")
 
-# # Rotate x-axis labels
-# fig.update_xaxes(tickangle=45)
-
-# # Set theme, margin, and annotation in layout
-# fig.update_layout(
-#     template="plotly_dark",
-#     margin=dict(r=10, t=25, b=40, l=60),
-#     annotations=[
-#         dict(
-#             text="Source: NOAA",
-#             showarrow=False,
-#             xref="paper",
-#             yref="paper",
-#             x=0,
-#             y=0)
-#     ]
-# )
-
-# fig.show()
-# plot(fig)
-
-
-# fig = go.Figure() # or any Plotly Express function e.g. px.bar(...)
-# fig.add_trace( ... )
-# fig.update_layout( ... )
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
