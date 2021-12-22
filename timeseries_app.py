@@ -42,8 +42,8 @@ df = pd.read_csv(
 freq = df
 freq = freq.Country.value_counts().reset_index().rename(columns={"index": "x"})
 
-# read in 3d volcano surface data
-df_v = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv")
+# # read in 3d volcano surface data
+# df_v = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv")
 
 
 geo_path = "/home/feynman/Planet/Banks_Timeline/Banks_focused.shp"
@@ -51,10 +51,15 @@ geodf = gpd.read_file(geo_path)
 # geodf = geodf.to_crs(epsg=4326)
 # geodf = geodf.to_crs("WGS84")
 
+slump_path = '/home/feynman/Planet/Banks_Timeline/Focused_Regions/Banks_slump_data.csv'
+slump_df = pd.read_csv(slump_path)
+slump_dfT = slump_df.T
+slump_dfT = slump_dfT.drop(index='Date')
+slump_dates = slump_df['Date']
+slump_dfT['Final Area'] = slump_dfT[28]
+# print(slump_dfT)
 
-
-
-
+#%%
 
 
 # using empet code to convert .shp to geoJSON
@@ -89,6 +94,7 @@ def shapefile_to_geojson(gdf, index_list, tolerance=0.025):
                    'properties': {'name': geo_names[index]},
                    'geometry': {'type': gtype,
                                 'coordinates': bcoords},
+
                     }
 
         geojson['features'].append(feature)
@@ -100,7 +106,7 @@ L = len(geojsdata['features'])
 
 
 
-
+#%%
 
 # Initialize figure with subplots
 fig = make_subplots(
@@ -112,10 +118,15 @@ fig = make_subplots(
 
 
 fig.add_trace(
-    go.Choroplethmapbox(geojson=json.loads(geodf.to_json()),
-    # geojson=geojsdata,
-                                    locations=[geojsdata['features'][k]['id'] for k in range(L)],
-                                    colorscale="Viridis"),
+    px.choropleth_mapbox(slump_dfT, geojson=json.loads(geodf.to_json()), color='Final Area',
+    locations=[geojsdata['features'][k]['id'] for k in range(L)],
+    featureidkey='id',
+    center=dict(lat=71.909218, lon=-120.505967),
+    mapbox_style="carto-positron", zoom=3),
+    # geojson=json.loads(geodf.to_json()),
+    # # geojson=geojsdata,
+    #                                 locations=[geojsdata['features'][k]['id'] for k in range(L)],
+    #                                 colorscale="Viridis"),
     # fig.update_layout(mapbox_style="light", mapbox_accesstoken=token,
     # mapbox_zoom=3, mapbox_center = {"lat": 37.0902, "lon": -95.7129}),
     # fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}),
@@ -143,9 +154,29 @@ fig.add_trace(
 #                                     colorscale="Viridis")
 
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+### THIS ONE WORKS AS SINGLE MAP WITH POLYGONS
+#######################################################
+# fig = px.choropleth_mapbox(slump_dfT, geojson=json.loads(geodf.to_json()), color='Final Area',
+#                            locations=[geojsdata['features'][k]['id'] for k in range(L)],
+#                            featureidkey='id',
+#                            center=dict(lat=71.909218, lon=-120.505967),
+#                            mapbox_style="carto-positron", zoom=3)
+#######################################################3
+fig.update_layout(mapbox_style='stamen-terrain',
+                    height = 750,
+                    autosize=True,
+                    margin={"r":1,"t":1,"l":1,"b":1},
+                    paper_bgcolor='#303030',
+                    plot_bgcolor='#303030',
+                    mapbox=dict(center=dict(lat=71.909218, lon=-120.505967),zoom=6)
+                    )
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+
+# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__)
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # app.layout = html.Div([
 #     dcc.Graph(figure=fig)
 # ])
@@ -159,7 +190,7 @@ styles = {
 }
 
 # print(geojsdata)
-fig.update_layout(clickmode='event+select')
+# fig.update_layout(clickmode='event+select')
 
 # fig.update_traces(marker_size=20)
 
