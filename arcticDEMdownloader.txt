@@ -1,0 +1,7 @@
+
+
+
+## Example ArcticDEM Download
+## wget -r -N -nH -np -R index.html* --cut-dirs=6 http://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/v3.0/2m/40_15/40_15_1_2_2m_v3.0.tar.gz
+
+wget -r -N -nH -np -R index.html* --cut-dirs=6 http://data.pgc.umn.edu/elev/dem/setsm/ArcticDEM/mosaic/v3.0/2m/__TILE__/__fullNAME__.tar.gz
