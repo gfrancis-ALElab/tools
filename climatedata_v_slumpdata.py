@@ -29,8 +29,8 @@ c = utm.to_latlon(slumps['center_utm'][:].x, slumps['center_utm'][:].y, zn, zl)
 slumps['center_lat_lon'] = list(zip(*c))
 
 ### example nc file for coordinate grid conversion
-climate_files_dir = '/opt/globsim/examples/WR_data/era5'
-climate_file = climate_files_dir + '/era5_rea_pl_20200531_to_20200601.nc'
+climate_files_dir = '/opt/globsim/examples/WR_data'
+climate_file = climate_files_dir + '/era5/era5_rea_pl_20200531_to_20200601.nc'
 nc_data = nc.Dataset(climate_file)
 
 
@@ -77,7 +77,7 @@ def get_timeseries(var, grid_lat, grid_lon):
 
     series = []
     timeFULL = []
-    for ncfile in natsorted(glob.glob(climate_files_dir + '/*%s*.nc'%atype)):
+    for ncfile in natsorted(glob.glob(climate_files_dir + '/era5_2*/*%s*.nc'%atype)):
         
         nc_data = nc.Dataset(ncfile)
         ### convert netCDF4 time hours since 1900 01 01 to readable time
@@ -106,26 +106,60 @@ def get_timeseries(var, grid_lat, grid_lon):
 
 
 
-fig, ax1 = plt.subplots()
-ax2 = ax1.twinx()
-for variable in ['t','t2m','d2m']:
-    series, time, label, units = get_timeseries(variable, 4, 7)
-    ax1.plot(time, series, label='%s [%s]'%(label,units))
-series, time, label, units = get_timeseries('tp', 4, 7)
-ax2.plot(time, series, color='purple', label='%s [%s]'%(label,units))
+# fig, ax1 = plt.subplots(figsize=(20,10))
+# ax2 = ax1.twinx()
+# for variable in ['t','t2m','d2m']:
+#     series, time, label, units = get_timeseries(variable, 4, 8)
+#     ax1.plot(time, series, label='%s [%s]'%(label,units))
+# series, time, label, units = get_timeseries('tp', 4, 8)
+# ax2.plot(time, series, color='purple', label='%s [%s]'%(label,units))
 
 
-fig.legend()
-plt.xlabel('Time [YYY-MM-DD]')
-
-
-
-
+# fig.legend()
+# plt.xlabel('Time [YYY-MM-DD]')
+# plt.tight_layout()
+# plt.savefig('climate_data_grid0408.svg', format="svg")
 
 
 
 
 
+variables = ['t', 'r', 'u', 'v', 'z',
+              't2m', 'd2m', 'u10', 'v10', 'tco3', 'tcwv',
+              'tp', 'ssrd', 'strd']
+
+
+df = pd.DataFrame()
+series, time, label, units = get_timeseries('t', 4, 8)
+df['time'] = time
+df[label + ' [%s]'%units] = series
+
+df2 = pd.DataFrame()
+
+
+length = 0
+for variable in variables:
+    series, time, label, units = get_timeseries(variable, 4, 8)
+    # d = {'time': time, label: series}
+    
+    if len(time) == len(df['time']):
+        df[label + ' [%s]'%units] = series
+    
+    else:
+        if 'time' in df2:
+            df2[label + ' [%s]'%units] = series
+        else:
+            df2['time'] = time
+            df2[label + ' [%s]'%units] = series
+
+# print(df)
+# print(df2)
+
+
+df.to_csv('WR_ERA5_set1_grid0408.csv')
+df2.to_csv('WR_ERA5_set2_grid0408.csv')
+slumps.to_csv('WR_slumps_ERA5_crossinfo.csv',
+              columns = ['Id', 'center_utm', 'center_lat_lon', 'grid_index'])
 
 
 
