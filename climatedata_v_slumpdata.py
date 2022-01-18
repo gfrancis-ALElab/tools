@@ -20,7 +20,7 @@ import glob
 
 ### input slump data
 
-slumps_file = '/home/feynman/Planet/WR_Timeline/Priority_Regions/Priority_20thresh_8buffer.shp'
+slumps_file = '/home/feynman/Planet/Banks_Timeline/Focused_Regions/Priority_20thresh_10buffer.shp'
 slumps = gpd.read_file(slumps_file)
 slumps['center_utm'] = slumps.centroid
 zn = int(slumps.crs.name[-3:-1])
@@ -29,8 +29,8 @@ c = utm.to_latlon(slumps['center_utm'][:].x, slumps['center_utm'][:].y, zn, zl)
 slumps['center_lat_lon'] = list(zip(*c))
 
 ### example nc file for coordinate grid conversion
-climate_files_dir = '/opt/globsim/examples/WR_data'
-climate_file = climate_files_dir + '/era5/era5_rea_pl_20200531_to_20200601.nc'
+climate_files_dir = '/opt/globsim/examples/Banks_data'
+climate_file = climate_files_dir + '/era5/era5_rea_pl_20120622_to_20120623.nc'
 nc_data = nc.Dataset(climate_file)
 
 
@@ -60,7 +60,6 @@ Ids_loc.insert(0, 'Id', Ids_loc.index)
 
 
 
-
 ### create time series of a variable given grid index
 
 def get_timeseries(var, grid_lat, grid_lon):
@@ -77,7 +76,7 @@ def get_timeseries(var, grid_lat, grid_lon):
 
     series = []
     timeFULL = []
-    for ncfile in natsorted(glob.glob(climate_files_dir + '/era5_2*/*%s*.nc'%atype)):
+    for ncfile in natsorted(glob.glob(climate_files_dir + '/era5/*%s*.nc'%atype)):
         
         nc_data = nc.Dataset(ncfile)
         ### convert netCDF4 time hours since 1900 01 01 to readable time
@@ -130,7 +129,7 @@ variables = ['t', 'r', 'u', 'v', 'z',
 
 
 df = pd.DataFrame()
-series, time, label, units = get_timeseries('t', 4, 8)
+series, time, label, units = get_timeseries('t', 3, 11)
 df['time'] = time
 df[label + ' [%s]'%units] = series
 
@@ -139,7 +138,7 @@ df2 = pd.DataFrame()
 
 length = 0
 for variable in variables:
-    series, time, label, units = get_timeseries(variable, 4, 8)
+    series, time, label, units = get_timeseries(variable, 3, 11)
     # d = {'time': time, label: series}
     
     if len(time) == len(df['time']):
@@ -156,37 +155,11 @@ for variable in variables:
 # print(df2)
 
 
-df.to_csv('WR_ERA5_set1_grid0408.csv')
-df2.to_csv('WR_ERA5_set2_grid0408.csv')
-slumps.to_csv('WR_slumps_ERA5_crossinfo.csv',
+
+df.to_csv('Banks_ERA5_grid0311.csv')
+# df2.to_csv('WR_ERA5_set2_grid0408.csv')
+slumps.to_csv('Banks_slumps_ERA5_crossinfo.csv',
               columns = ['Id', 'center_utm', 'center_lat_lon', 'grid_index'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
