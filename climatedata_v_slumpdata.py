@@ -19,8 +19,7 @@ import glob
 
 
 ### input slump data
-
-slumps_file = '/home/feynman/Planet/Banks_Timeline/Focused_Regions/Priority_20thresh_10buffer.shp'
+slumps_file = '~/Planet/WR_Timeline/Focused_Regions/Priority_20thresh_10buffer.shp'
 slumps = gpd.read_file(slumps_file)
 slumps['center_utm'] = slumps.centroid
 zn = int(slumps.crs.name[-3:-1])
@@ -29,8 +28,8 @@ c = utm.to_latlon(slumps['center_utm'][:].x, slumps['center_utm'][:].y, zn, zl)
 slumps['center_lat_lon'] = list(zip(*c))
 
 ### example nc file for coordinate grid conversion
-climate_files_dir = '/opt/globsim/examples/Banks_data'
-climate_file = climate_files_dir + '/era5/era5_rea_pl_20120622_to_20120623.nc'
+climate_files_dir = '/opt/globsim/examples/WR_data'
+climate_file = climate_files_dir + '/era5/era5_rea_pl_20110520_to_20110521.nc'
 nc_data = nc.Dataset(climate_file)
 
 
@@ -120,7 +119,7 @@ def get_timeseries(var, grid_lat, grid_lon):
 # plt.savefig('climate_data_grid0408.svg', format="svg")
 
 
-
+#%%
 
 
 variables = ['t', 'r', 'u', 'v', 'z',
@@ -129,7 +128,7 @@ variables = ['t', 'r', 'u', 'v', 'z',
 
 
 df = pd.DataFrame()
-series, time, label, units = get_timeseries('t', 3, 11)
+series, time, label, units = get_timeseries('t', lat_index, 8)
 df['time'] = time
 df[label + ' [%s]'%units] = series
 
@@ -138,7 +137,7 @@ df2 = pd.DataFrame()
 
 length = 0
 for variable in variables:
-    series, time, label, units = get_timeseries(variable, 3, 11)
+    series, time, label, units = get_timeseries(variable, lat_index, 8)
     # d = {'time': time, label: series}
     
     if len(time) == len(df['time']):
@@ -155,11 +154,11 @@ for variable in variables:
 # print(df2)
 
 
-
-df.to_csv('Banks_ERA5_grid0311.csv')
-# df2.to_csv('WR_ERA5_set2_grid0408.csv')
-slumps.to_csv('Banks_slumps_ERA5_crossinfo.csv',
-              columns = ['Id', 'center_utm', 'center_lat_lon', 'grid_index'])
+#%%
+df.to_csv('~/Documents/distilled_data/WR_longERA5_set1_grid0408.csv')
+df2.to_csv('~/Documents/distilled_data/WR_longERA5_set2_grid0408.csv')
+# slumps.to_csv('Banks_slumps_ERA5_crossinfo.csv',
+#               columns = ['Id', 'center_utm', 'center_lat_lon', 'grid_index'])
 
 
 
